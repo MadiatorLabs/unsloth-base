@@ -17,6 +17,8 @@ OpenAI-compatible API included.
 | Variable | Required | Description |
 |----------|----------|-------------|
 | `UNSLOTH_ADMIN_PASSWORD` | Yes | Admin password for Unsloth Studio |
+| `JUPYTER_PASSWORD` | No | Token for JupyterLab access (empty = no auth) |
+| `EXIT_ON_CRASH` | No | Set to `true` to exit container on Studio crash (default: `false`, keeps container alive for debugging) |
 
 ## Storage
 
@@ -27,6 +29,7 @@ All persistent data is stored under `/workspace/unsloth/`:
 - `exports/` — Exported models (GGUF, safetensors)
 - `assets/datasets/` — Uploaded and generated datasets
 - `auth/` — User authentication database
+- `logs/` — Service logs (Jupyter)
 
 With a network volume attached, all data persists across pod restarts.
 
