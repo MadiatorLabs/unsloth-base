@@ -6,14 +6,15 @@ SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 # ============================================
 # Layer 1: System packages (Node.js for frontend build + runtime oxc-validator)
 # ============================================
-RUN curl -fsSL https://deb.nodesource.com/setup_22.x | bash - && \
-    apt-get install -y --no-install-recommends nodejs && \
+ARG NODE_MAJOR=22
+RUN curl -fsSL https://deb.nodesource.com/setup_${NODE_MAJOR}.x | bash - && \
+    apt-get install -y --no-install-recommends nodejs=${NODE_MAJOR}.* && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # ============================================
 # Layer 2: Clone Unsloth repo (pin to specific commit for reproducibility)
 # ============================================
-ARG UNSLOTH_COMMIT=main
+ARG UNSLOTH_COMMIT=29270a3726d00c2dd11bb049b61d838e60ef341b
 RUN git clone https://github.com/unslothai/unsloth.git /opt/unsloth && \
     cd /opt/unsloth && \
     git checkout ${UNSLOTH_COMMIT}
@@ -22,13 +23,13 @@ RUN git clone https://github.com/unslothai/unsloth.git /opt/unsloth && \
 # Layer 3: Build frontend (React/Vite)
 # ============================================
 WORKDIR /opt/unsloth/studio/frontend
-RUN npm install && npx vite build
+RUN if [ -f package-lock.json ]; then npm ci; else npm install; fi && npx vite build
 
 # ============================================
 # Layer 4: Install oxc-validator runtime deps
 # ============================================
 WORKDIR /opt/unsloth/studio/backend/core/data_recipe/oxc-validator
-RUN npm install
+RUN if [ -f package-lock.json ]; then npm ci; else npm install; fi
 
 # ============================================
 # Layer 5: Create Python venv and install uv
@@ -121,7 +122,7 @@ RUN chmod +x /start.sh
 # ============================================
 # Metadata
 # ============================================
-EXPOSE 8000 8888 6006 22
+EXPOSE 8000 8888 22
 
 ENV PYTHONUNBUFFERED=1
 
