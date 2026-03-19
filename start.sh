@@ -89,12 +89,6 @@ echo ""
 echo "  Web UI:      https://${RUNPOD_POD_ID}-8000.proxy.runpod.net"
 echo "  Jupyter:     https://${RUNPOD_POD_ID}-8888.proxy.runpod.net"
 echo "  (RUNPOD_POD_ID is auto-provided by RunPod)"
-echo ""
-if [ ! -f "$PERSISTENT/unsloth/auth/auth.db" ]; then
-    echo "  Password:    ${UNSLOTH_ADMIN_PASSWORD}"
-else
-    echo "  Password:    (using existing account from network volume)"
-fi
 echo "  Storage:     $PERSISTENT/unsloth/"
 echo "═══════════════════════════════════════════════════════"
 
